@@ -42,3 +42,21 @@ How does Lena actually pay in stores, and what does she do when she’d have use
 Does she hold a Klarna or PayPal card, or only the apps?
 When she picks a provider at checkout, is it truly indifferent, or does she have unstated preferences (past experience, limits, fees)?
 Would “decide first, pay later” in a card get her to choose Riverty, or only to add another option she uses occasionally?
+
+Future-State Journey Map: Riverty Consumer Card (Lena, 32, Cologne)
+
+Assumptions: This map is a design hypothesis. The brief doesn’t define the card’s mechanics, so I assume the MVP lets Lena decide, after a purchase, whether to keep it before the money fully leaves her account. Whether that’s delayed debit, fixed limits with automatic repayment, or something else is an open product and regulatory decision. Lena’s internal states are inferred from the brief’s description of her, not from research.
+
+The Journey
+Stage	User Action	Internal State	Pain Point Addressed
+1. Discover & Add	While paying with Riverty at a partner merchant, Lena sees an offer to add the card. She applies in the app in a few minutes.	Curious but skeptical. “I already have Klarna and PayPal. What’s different?” She’s open if it’s quick and the terms are clear.	No brand pull or presence between checkouts. Riverty reaches her at a moment she already trusts it, instead of hoping she’ll seek it out (about 6% brand preference today).
+2. Activate & Set Control	Lena activates the card, adds it to her phone wallet, and sees her limit and repayment terms upfront.	Cautious, wanting reassurance. With no financial cushion, she needs to feel nothing will surprise her.	Fear of losing control. Fixed, visible limits and transparent terms answer her core need and also support regulatory approval.
+3. Use Online & In-Store	At a non-partner website she pays with the card. In a store in Cologne she taps her phone. In both cases she decides afterwards whether to keep the item.	Relieved and in control. The same “decide first, pay later” logic works wherever she shops, and she stops thinking about which provider to pick.	Coverage gap. Riverty today only works at partner merchants and not in stores. In-store she’d otherwise fall back to a debit card, where money leaves her account immediately.
+4. Review & Repay	Lena opens the app, sees her purchases, returns or keeps items, and repays or lets automatic repayment run.	In command. She feels the card works on her terms, which builds habit.	Lack of an everyday relationship. Repeated use turns Riverty from a checkout option into something she owns, supporting the assumed spend ramp. Revolving balances also create the interest income in the business case.
+Three Competitive Advantages over Klarna
+
+Klarna is the direct benchmark and is ahead. It holds its own banking licence and scheme membership and already runs the model Riverty is building. These are therefore positioning bets, not claims of superiority.
+
+A merchant-first card that sends customers toward partners. Riverty’s strategy rests on enterprise and SME merchants, and the card is designed to sit inside that, supporting conversion at partner checkouts rather than competing with them. Klarna’s card runs the broader consumer-wallet model. This is only an advantage if we actually prove the card is good for merchants.
+A warm entry point through existing Riverty users. Riverty has a large BNPL base in Germany, and the card is offered first to users already paying with it. We don’t need to win Lena from scratch. We need to convert people who already trust Riverty at checkout. The business case assumes 5% conversion, which is the assumption I’d test first.
+A narrow, focused promise. Rather than copying the market leader’s full feature set, we lead with control over timing for heavy BNPL users and leave out rewards and extras. This is cheaper to build on limited capacity and easier to explain. It’s an advantage only if discovery confirms that control, not rewards or breadth, is what drives Lena’s choice.
