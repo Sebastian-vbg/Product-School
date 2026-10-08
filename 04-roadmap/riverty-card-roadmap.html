@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riverty Card roadmap</title>
+<style>
+  :root {
+    --bg: #eef1f5;
+    --surface: #ffffff;
+    --ink: #14213d;
+    --muted: #5b6577;
+    --line: #d5dbe5;
+    --track: #dde3ec;
+    --qw: #0a7f72;
+    --qw-bg: #dff3f0;
+    --mp: #4247c4;
+    --mp-bg: #e5e6fa;
+    --fi: #8a5d00;
+    --fi-bg: #f8ecce;
+    --ts: #a63a44;
+    --ts-bg: #f8e1e3;
+    --focus: #14213d;
+    --radius: 10px;
+  }
+  :root:not([data-theme="light"]) {
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0f1624;
+      --surface: #182137;
+      --ink: #e8edf7;
+      --muted: #9aa6bd;
+      --line: #2b3652;
+      --track: #2b3652;
+      --qw: #4fd1c0;
+      --qw-bg: #11332f;
+      --mp: #9ea3ff;
+      --mp-bg: #23264f;
+      --fi: #f0c14f;
+      --fi-bg: #3a2f10;
+      --ts: #ff8d97;
+      --ts-bg: #3f1a1f;
+      --focus: #e8edf7;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0f1624;
+    --surface: #182137;
+    --ink: #e8edf7;
+    --muted: #9aa6bd;
+    --line: #2b3652;
+    --track: #2b3652;
+    --qw: #4fd1c0;
+    --qw-bg: #11332f;
+    --mp: #9ea3ff;
+    --mp-bg: #23264f;
+    --fi: #f0c14f;
+    --fi-bg: #3a2f10;
+    --ts: #ff8d97;
+    --ts-bg: #3f1a1f;
+    --focus: #e8edf7;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 16px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 32px 24px 56px; }
+
+  header { display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; }
+  h1 { margin: 0; font-size: 2.1rem; line-height: 1.1; letter-spacing: -0.02em; font-weight: 700; }
+  .sub { margin: 8px 0 0; color: var(--muted); max-width: 62ch; }
+  .team { color: var(--muted); font-size: 0.875rem; text-align: right; }
+  .team strong { color: var(--ink); font-weight: 600; }
+  .theme-btn {
+    margin-top: 8px; background: transparent; color: var(--ink); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px 12px; font: inherit; font-size: 0.8125rem; cursor: pointer;
+  }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 24px; }
+  .filters .label { color: var(--muted); font-size: 0.875rem; margin-right: 4px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 14px; font: inherit; font-size: 0.875rem; cursor: pointer;
+  }
+  .chip .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
+  .chip .count { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .chip[aria-pressed="true"] .count { color: inherit; opacity: 0.75; }
+  .chip[data-q="qw"] .dot { background: var(--qw); }
+  .chip[data-q="mp"] .dot { background: var(--mp); }
+  .chip[data-q="fi"] .dot { background: var(--fi); }
+  .chip[data-q="ts"] .dot { background: var(--ts); }
+
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
+  .lane { background: color-mix(in srgb, var(--surface) 55%, transparent); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  .lane-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 2px 4px 14px; border-bottom: 2px solid var(--ink); margin-bottom: 14px; }
+  .lane-head h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.01em; }
+  .lane-head span { color: var(--muted); font-size: 0.8125rem; text-align: right; }
+  .lane-cards { display: flex; flex-direction: column; gap: 12px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-left-width: 5px;
+    border-radius: var(--radius); padding: 14px 16px 14px;
+    transition: opacity 0.2s ease, transform 0.15s ease;
+  }
+  .card[data-q="qw"] { border-left-color: var(--qw); }
+  .card[data-q="mp"] { border-left-color: var(--mp); }
+  .card[data-q="fi"] { border-left-color: var(--fi); }
+  .card[data-q="ts"] { border-left-color: var(--ts); }
+  .card.dim { opacity: 0.28; }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .card h3 { margin: 0; font-size: 1.0625rem; line-height: 1.25; }
+  .card h3 .id { color: var(--muted); font-weight: 500; margin-right: 6px; font-variant-numeric: tabular-nums; }
+  .badge { flex: none; font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+  .badge[data-q="qw"] { background: var(--qw-bg); color: var(--qw); }
+  .badge[data-q="mp"] { background: var(--mp-bg); color: var(--mp); }
+  .badge[data-q="fi"] { background: var(--fi-bg); color: var(--fi); }
+  .badge[data-q="ts"] { background: var(--ts-bg); color: var(--ts); }
+
+  .meters { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: center; margin: 12px 0 10px; font-size: 0.8125rem; color: var(--muted); }
+  .pips { display: flex; gap: 4px; }
+  .pip { width: 100%; max-width: 28px; height: 6px; border-radius: 3px; background: var(--track); }
+  .pip.on-v { background: var(--ink); }
+  .pip.on-e { background: var(--muted); }
+  .meters b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; margin-left: 6px; }
+
+  .rationale { margin: 0; color: var(--ink); }
+  .note { margin: 10px 0 0; padding-top: 10px; border-top: 1px dashed var(--line); color: var(--muted); font-size: 0.8125rem; }
+
+  .cut { margin-top: 36px; }
+  .cut h2 { margin: 0 0 4px; font-size: 1.35rem; }
+  .cut > p { margin: 0 0 14px; color: var(--muted); max-width: 70ch; }
+  .cut-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .cut .card { border-style: dashed; border-left-style: solid; background: transparent; }
+  .cut .card h3 { text-decoration: line-through; text-decoration-thickness: 1px; text-decoration-color: var(--muted); }
+
+  .empty { display: none; margin: 0; color: var(--muted); font-size: 0.875rem; padding: 8px 4px; }
+
+  footer { margin-top: 32px; color: var(--muted); font-size: 0.8125rem; max-width: 80ch; }
+
+  @media (max-width: 980px) {
+    .lanes { grid-template-columns: 1fr; }
+    .cut-grid { grid-template-columns: 1fr; }
+    .team { text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Riverty Card roadmap</h1>
+      <p class="sub">Germany Friends &amp; Family MVP for Lena, 32, Cologne. Primary metrics: 70% card activation and EUR 4,000 Year 1 spend per active user. Guardrails: card churn and partner-checkout conversion.</p>
+    </div>
+    <div class="team">
+      <div><strong>Team:</strong> 7 developers (2 backend, 2 frontend, 1 fullstack) and 2 QA</div>
+      <div><strong>Cadence:</strong> Kanban, native app release every week</div>
+      <button class="theme-btn" id="themeBtn" type="button">Switch theme</button>
+    </div>
+  </header>
+
+  <div class="filters" role="group" aria-label="Filter by quadrant">
+    <span class="label">Show</span>
+    <button class="chip" type="button" data-q="all" aria-pressed="true">All <span class="count" id="c-all"></span></button>
+    <button class="chip" type="button" data-q="qw" aria-pressed="false"><span class="dot"></span>Quick win <span class="count" id="c-qw"></span></button>
+    <button class="chip" type="button" data-q="mp" aria-pressed="false"><span class="dot"></span>Major project <span class="count" id="c-mp"></span></button>
+    <button class="chip" type="button" data-q="fi" aria-pressed="false"><span class="dot"></span>Fill-in <span class="count" id="c-fi"></span></button>
+    <button class="chip" type="button" data-q="ts" aria-pressed="false"><span class="dot"></span>Time sinker <span class="count" id="c-ts"></span></button>
+  </div>
+
+  <main>
+    <div class="lanes" id="lanes"></div>
+
+    <section class="cut" aria-labelledby="cutTitle">
+      <h2 id="cutTitle">Cut list</h2>
+      <p>Cut from the MVP. Revisit only if Friends &amp; Family feedback shows a clear need.</p>
+      <div class="cut-grid" id="cutGrid"></div>
+    </section>
+  </main>
+
+  <footer>
+    Value: 1 = negligible impact, 5 = directly moves the primary metric. Effort: 1 = days of engineering, 5 = months or high complexity. Effort scores are product judgment, not engineering estimates, and lane placement for R1 and R4 depends on Risk and Regulatory approval timing.
+  </footer>
+</div>
+
+<script>
+(function () {
+  var QUADRANTS = {
+    qw: "Quick win",
+    mp: "Major project",
+    fi: "Fill-in",
+    ts: "Time sinker"
+  };
+
+  var FEATURES = [
+    { id: "R1", name: "Decide-First Window", value: 5, effort: 5, q: "mp", lane: "later",
+      rationale: "It is Lena\u2019s core need (pay only after deciding to keep the item) and the clearest differentiator, but it needs credit mechanics, reconciliation and new regulatory approval that no weekly release can shortcut.",
+      note: "Open the regulatory conversation during Now so approval is not the bottleneck later." },
+    { id: "R2", name: "Instant Virtual Card + Wallet", value: 5, effort: 3, q: "qw", lane: "now",
+      rationale: "No card in her wallet means no activation and no in-store spend, so this directly drives both primary metrics, and it reuses the Mastercard and Paymentology platform that the Amazon Business pilot already funds." },
+    { id: "R3", name: "\u201CWhat I Owe\u201D Overview", value: 4, effort: 2, q: "qw", lane: "now",
+      rationale: "A cheap, frontend-led screen that answers her control need and protects the churn guardrail, though it doesn\u2019t drive activation by itself." },
+    { id: "R4", name: "Fixed Limit + Auto-Repayment", value: 4, effort: 4, q: "mp", lane: "next",
+      rationale: "It is the credit backbone that makes any spend possible and keeps the proposition simple enough for approval, but it carries backend, risk and repayment-collection work.",
+      note: "Start credit-policy and regulatory approval during Now. Backend capacity is shared with R2." },
+    { id: "R5", name: "In-App Card Controls", value: 3, effort: 2, q: "fi", lane: "next",
+      rationale: "It is expected table stakes that supports trust, fraud limits and her control need, but it won\u2019t move activation or the EUR 4,000 spend figure." },
+    { id: "R6", name: "Partner Merchant Discovery", value: 2, effort: 3, q: "fi", lane: "later",
+      rationale: "It helps the merchant-first story but does nothing for Lena\u2019s friction or the primary metrics, and the best protection for the partner-checkout guardrail is simply leaving Riverty checkout untouched." },
+    { id: "R7", name: "Pre-Approved Invite for Heavy Users", value: 4, effort: 2, q: "qw", lane: "now",
+      rationale: "Cards that nobody holds produce no spend, and the brief\u2019s own gap is under-monetised heavy users, so this is the cheapest route to cardholders, assuming existing risk data can support pre-approval." },
+    { id: "R8", name: "Smart Repayment Reminders", value: 3, effort: 2, q: "fi", lane: "next",
+      rationale: "It protects arrears and churn, but reframed as a first-purchase nudge it could also lift the 70% activation rate." },
+    { id: "R9", name: "Physical Card", value: 2, effort: 4, q: "ts", lane: "cut",
+      rationale: "A mobile-first shopper can use a phone wallet in stores, while production, logistics and per-card cost are heavy and don\u2019t fit weekly releases." },
+    { id: "R10", name: "Rewards / Cashback", value: 2, effort: 4, q: "ts", lane: "cut",
+      rationale: "It starts a margin race the brief warns against, with no evidence Lena values it over control, and it adds finance and pricing approval." }
+  ];
+
+  var LANES = [
+    { key: "now", title: "Now", desc: "3-week sprint" },
+    { key: "next", title: "Next", desc: "Following 1\u20132 sprints" },
+    { key: "later", title: "Later", desc: "Backlog" }
+  ];
+
+  function pips(n, cls) {
+    var out = "";
+    for (var i = 1; i <= 5; i++) {
+      out += '<span class="pip' + (i <= n ? " " + cls : "") + '"></span>';
+    }
+    return out;
+  }
+
+  function cardHTML(f) {
+    return '' +
+      '<article class="card" data-q="' + f.q + '" tabindex="-1">' +
+        '<div class="card-top">' +
+          '<h3><span class="id">' + f.id + '</span>' + f.name + '</h3>' +
+          '<span class="badge" data-q="' + f.q + '">' + QUADRANTS[f.q] + '</span>' +
+        '</div>' +
+        '<div class="meters" aria-label="Value ' + f.value + ' of 5, effort ' + f.effort + ' of 5">' +
+          '<span>Value<b>' + f.value + '</b></span><div class="pips">' + pips(f.value, "on-v") + '</div>' +
+          '<span>Effort<b>' + f.effort + '</b></span><div class="pips">' + pips(f.effort, "on-e") + '</div>' +
+        '</div>' +
+        '<p class="rationale">' + f.rationale + '</p>' +
+        (f.note ? '<p class="note">' + f.note + '</p>' : '') +
+      '</article>';
+  }
+
+  // Render lanes
+  var lanesEl = document.getElementById("lanes");
+  lanesEl.innerHTML = LANES.map(function (l) {
+    var items = FEATURES.filter(function (f) { return f.lane === l.key; });
+    return '' +
+      '<section class="lane" aria-labelledby="lane-' + l.key + '">' +
+        '<div class="lane-head"><h2 id="lane-' + l.key + '">' + l.title + '</h2><span>' + l.desc + '</span></div>' +
+        '<div class="lane-cards">' + items.map(cardHTML).join("") + '</div>' +
+      '</section>';
+  }).join("");
+
+  // Render cut list
+  document.getElementById("cutGrid").innerHTML =
+    FEATURES.filter(function (f) { return f.lane === "cut"; }).map(cardHTML).join("");
+
+  // Counts
+  var counts = { all: FEATURES.length, qw: 0, mp: 0, fi: 0, ts: 0 };
+  FEATURES.forEach(function (f) { counts[f.q]++; });
+  Object.keys(counts).forEach(function (k) {
+    document.getElementById("c-" + k).textContent = counts[k];
+  });
+
+  // Filtering
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));
+  function applyFilter(q) {
+    chips.forEach(function (c) { c.setAttribute("aria-pressed", String(c.getAttribute("data-q") === q)); });
+    Array.prototype.forEach.call(document.querySelectorAll(".card"), function (card) {
+      var match = q === "all" || card.getAttribute("data-q") === q;
+      card.classList.toggle("dim", !match);
+    });
+  }
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () { applyFilter(c.getAttribute("data-q")); });
+  });
+
+  // Theme toggle
+  var root = document.documentElement;
+  document.getElementById("themeBtn").addEventListener("click", function () {
+    var current = root.getAttribute("data-theme");
+    var systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var isDark = current ? current === "dark" : systemDark;
+    root.setAttribute("data-theme", isDark ? "light" : "dark");
+  });
+})();
+</script>
+</body>
+</html>
