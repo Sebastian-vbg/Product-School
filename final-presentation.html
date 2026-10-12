@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riverty Card: What I Owe | Final Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07162C;
+    --fg: #ffffff;
+    --muted: #ffffff;
+    --orange: #fb923c;
+    --cyan: #22d3ee;
+    --teal: #34d399;
+    --blue: #60a5fa;
+    --violet: #a78bfa;
+    --pink: #f472b6;
+    --eyebrow: #fdba74;
+    --card-border: rgba(251,146,60,0.25);
+    --card-bg: rgba(255,255,255,0.045);
+    --head: "Saans", "Inter", "Segoe UI", system-ui, sans-serif;
+    --body: "Saans", "Inter", "Segoe UI", system-ui, sans-serif;
+    --mono: "Antarctican Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-snap-type: y proximity; scroll-behavior: smooth; scroll-padding-top: 0; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: var(--body); font-size: 16px; line-height: 1.5; font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--cyan); }
+  :focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+
+  #progress { position: fixed; top: 0; left: 0; height: 4px; width: 0; background: linear-gradient(90deg, var(--orange), var(--pink)); z-index: 50; }
+  #dots { position: fixed; right: 18px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 50; }
+  #dots button { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.6); background: transparent; padding: 0; cursor: pointer; }
+  #dots button[aria-current="true"] { background: var(--orange); border-color: var(--orange); }
+
+  section {
+    min-height: 100vh; scroll-snap-align: start;
+    display: flex; align-items: center;
+    padding: 64px 56px 56px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .wrap { width: 100%; max-width: 1180px; margin: 0 auto; }
+
+  .eyebrow { font-family: var(--mono); font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; color: var(--eyebrow); font-size: 0.78rem; margin: 0 0 10px; }
+  h1, h2, h3 { font-family: var(--head); margin: 0; letter-spacing: -0.02em; }
+  h1 { font-weight: 900; font-size: clamp(2.4rem, 5.4vw, 4.4rem); line-height: 1.04; }
+  h2 { font-weight: 800; font-size: clamp(1.7rem, 3.2vw, 2.6rem); line-height: 1.1; margin-bottom: 22px; }
+  h3 { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; }
+  p { margin: 0 0 10px; }
+  .lead { font-size: 1.2rem; max-width: 62ch; }
+  .small { font-size: 0.875rem; }
+  .mono { font-family: var(--mono); font-size: 0.8rem; }
+
+  .card {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 16px; padding: 20px 22px;
+  }
+  .card.hero {
+    background: linear-gradient(145deg, rgba(251,146,60,0.16), rgba(167,139,250,0.10) 60%, rgba(255,255,255,0.03));
+    box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+  }
+  .card.key { box-shadow: 0 14px 30px rgba(0,0,0,0.3); }
+  .card h3 { color: var(--fg); }
+  .tag { display: inline-block; font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 3px 10px; border-radius: 999px; border: 1px solid currentColor; margin-bottom: 10px; }
+  .t-orange { color: var(--orange); } .t-cyan { color: var(--cyan); } .t-teal { color: var(--teal); }
+  .t-blue { color: var(--blue); } .t-violet { color: var(--violet); } .t-pink { color: var(--pink); }
+
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  .callout {
+    border-left: 5px solid var(--orange); border-radius: 0 14px 14px 0;
+    background: linear-gradient(90deg, rgba(251,146,60,0.18), rgba(251,146,60,0.04));
+    padding: 18px 22px;
+  }
+  .callout.cyan { border-left-color: var(--cyan); background: linear-gradient(90deg, rgba(34,211,238,0.16), rgba(34,211,238,0.03)); }
+  .callout.pink { border-left-color: var(--pink); background: linear-gradient(90deg, rgba(244,114,182,0.18), rgba(244,114,182,0.03)); }
+  .callout strong { font-weight: 800; }
+
+  .btn {
+    display: inline-block; font-family: var(--head); font-weight: 700; text-decoration: none;
+    background: var(--orange); color: #07162C; padding: 12px 22px; border-radius: 999px;
+    box-shadow: 0 8px 22px rgba(251,146,60,0.35);
+  }
+  .btn.ghost { background: transparent; color: var(--fg); border: 1.5px dashed rgba(255,255,255,0.7); box-shadow: none; }
+  .pill { display: inline-block; font-family: var(--mono); font-size: 0.78rem; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(251,146,60,0.1); margin: 0 8px 8px 0; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid rgba(255,255,255,0.12); vertical-align: top; }
+  th { font-family: var(--mono); font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--eyebrow); }
+  .scroll-x { overflow-x: auto; }
+
+  ul { margin: 0; padding-left: 1.1rem; }
+  li { margin-bottom: 4px; }
+
+  details { margin-top: 14px; border: 1px solid var(--card-border); border-radius: 12px; padding: 10px 16px; background: rgba(255,255,255,0.03); }
+  summary { cursor: pointer; font-family: var(--mono); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--eyebrow); }
+  details p { margin-top: 10px; font-size: 0.875rem; }
+
+  .stage { position: relative; }
+  .stage .num { font-family: var(--mono); font-size: 0.75rem; color: var(--eyebrow); }
+  .stage.misery { border-color: var(--pink); background: linear-gradient(145deg, rgba(244,114,182,0.2), rgba(244,114,182,0.05)); box-shadow: 0 14px 30px rgba(244,114,182,0.2); }
+  .stage dt { font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--eyebrow); margin-top: 8px; }
+  .stage dd { margin: 2px 0 0; font-size: 0.85rem; }
+  .misery-flag { position: absolute; top: -12px; right: 14px; background: var(--pink); color: #07162C; font-family: var(--mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; padding: 3px 10px; border-radius: 999px; }
+
+  .metric { text-align: left; }
+  .metric .big { font-family: var(--head); font-weight: 900; font-size: 2rem; line-height: 1.1; }
+  .metric .lab { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--eyebrow); margin-bottom: 6px; }
+
+  .kv { display: grid; grid-template-columns: 170px 1fr; gap: 6px 16px; font-size: 0.9rem; }
+  .kv dt { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--eyebrow); padding-top: 3px; }
+  .kv dd { margin: 0; }
+
+  .note { font-size: 0.8rem; font-style: normal; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 8px; margin-top: 12px; }
+
+  @media (max-width: 1000px) {
+    section { padding: 48px 22px; }
+    .g2, .g3, .g4 { grid-template-columns: 1fr; }
+    .kv { grid-template-columns: 1fr; }
+    #dots { right: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  @media print { section { min-height: auto; page-break-after: always; } #dots, #progress { display: none; } }
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+<nav id="dots" aria-label="Slide navigation"></nav>
+
+<main>
+
+<!-- 1. COVER -->
+<section id="s-cover" aria-label="Cover">
+  <div class="wrap">
+    <p class="eyebrow">Product School &middot; Product Management certification &middot; Final project</p>
+    <h1>Riverty Card (Germany):<br>&ldquo;What I Owe&rdquo; Overview</h1>
+    <p class="lead" style="margin-top:20px">Lena wants to decide first and pay second, everywhere she shops. This project takes one feature from strategy to a Friends &amp; Family experiment and launch plan.</p>
+    <div class="grid g3" style="margin-top:36px">
+      <div class="card hero">
+        <p class="eyebrow">Name / cohort</p>
+        <p style="margin:0">Add your name &middot; Add your cohort</p>
+      </div>
+      <div class="card">
+        <p class="eyebrow">Repo</p>
+        <p style="margin:0"><a href="https://github.com/Sebastian-vbg/Product-School" target="_blank" rel="noopener">github.com/Sebastian-vbg/Product-School</a></p>
+      </div>
+      <div class="card">
+        <p class="eyebrow">Prototype</p>
+        <a class="btn ghost" href="#s-blueprint">Prototype link: add before submit</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. STRATEGY -->
+<section id="s-strategy" aria-label="Strategy">
+  <div class="wrap">
+    <p class="eyebrow">Slide 5 &middot; Strategy</p>
+    <h2>Lena doesn&rsquo;t choose a BNPL provider. She takes whichever one the checkout shows her.</h2>
+    <div class="grid g2">
+      <div class="card hero">
+        <span class="tag t-orange">Problem hook</span>
+        <p>She has Klarna and PayPal installed and likes to pay only after she&rsquo;s decided to keep an item. That is a real need, but today it&rsquo;s met by the merchant&rsquo;s checkout, not by anything she owns. Riverty is invisible in the moment of choice (about 6% brand preference), absent in stores, and unreachable for loyal users outside partner merchants.</p>
+        <p class="note">&ldquo;Lena wants to decide first and pay second, everywhere she shops. Today that only works where a checkout happens to offer it, and the provider she gets is chosen by the merchant, not by her.&rdquo;</p>
+      </div>
+      <div class="card key">
+        <span class="tag t-cyan">Value proposition</span>
+        <p><strong>For Lena:</strong> &ldquo;The Riverty Card puts &lsquo;decide first, pay later&rsquo; in your wallet, so you choose when and where to use it, instead of waiting for a checkout to offer it.&rdquo;</p>
+        <p><strong>For Riverty:</strong> &ldquo;A direct, everyday relationship with our most loyal users, with interchange on every transaction and interest on revolving balances, without taking volume or margin away from our merchants.&rdquo;</p>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:18px">
+      <p class="eyebrow" style="margin-bottom:6px">Data-backed hypothesis</p>
+      <p style="margin:0"><strong>Based on</strong> the brief&rsquo;s observations that Lena uses BNPL on most non-trivial purchases, wants money to leave her account only after she decides to keep an item, takes whichever provider appears at checkout, and cannot use Riverty at non-partner merchants or in stores, <strong>we believe that</strong> a Riverty card carrying &ldquo;decide first, pay later&rdquo; to non-partner shops and physical stores <strong>will result in</strong> repeated use of the card for purchases she would otherwise make with a debit card, Klarna or PayPal, <strong>as measured by</strong> at least 40% of activated cardholders making 2 or more off-partner or in-store purchases within 60 days (proposed), and monthly spend per active user trending toward about EUR 333. <strong>Guardrails:</strong> no decline in partner-merchant checkout volume vs. a matched control group, and arrears and fraud within risk appetite.</p>
+    </div>
+    <p class="small" style="margin-top:10px">Evidence status: the 6% brand preference is a brief data point. Business-case figures (5% conversion, 70% activation, EUR 4,000 to EUR 7,000 spend) are modelling assumptions, not evidence. Thresholds marked &ldquo;proposed&rdquo; need Finance and Risk agreement.</p>
+  </div>
+</section>
+
+<!-- 3. RESEARCH -->
+<section id="s-research" aria-label="Research">
+  <div class="wrap">
+    <p class="eyebrow">Slide 6 &middot; Research</p>
+    <h2>Lena outsources the provider choice to the merchant</h2>
+    <div class="grid g2" style="align-items:start">
+      <div class="card key">
+        <span class="tag t-cyan">Workarounds and competition</span>
+        <div class="scroll-x">
+        <table>
+          <thead><tr><th>Situation</th><th>What Lena does</th><th>Tool</th></tr></thead>
+          <tbody>
+            <tr><td>Merchant offers Riverty</td><td>Uses it, by default, not by preference</td><td>Riverty</td></tr>
+            <tr><td>Merchant offers Klarna or PayPal</td><td>Takes the option shown, no loyalty to any provider</td><td>Klarna, PayPal</td></tr>
+            <tr><td>No BNPL she knows</td><td>Falls back to a conventional payment <em>(hypothesis)</em></td><td>Debit or credit card</td></tr>
+            <tr><td>In a physical store</td><td>Pays by debit card, losing &ldquo;decide first&rdquo; <em>(hypothesis)</em></td><td>Debit card</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="note">Klarna holds its own banking licence and has a head start. Riverty competes on a narrower promise (control over timing for heavy BNPL users), not breadth. In-store rows are interview hypotheses, not findings.</p>
+      </div>
+      <div class="card">
+        <span class="tag t-pink">Why Riverty loses her</span>
+        <ul>
+          <li><strong>No ownership of the moment of choice.</strong> Riverty wins only when a merchant happens to show it.</li>
+          <li><strong>No presence between checkouts.</strong> Klarna and PayPal are apps she opens independently.</li>
+          <li><strong>Coverage gap.</strong> Outside partner merchants and in stores, Riverty can&rsquo;t serve her.</li>
+          <li><strong>Heavy users are the most exposed.</strong> Each lost purchase hits the best customers hardest.</li>
+        </ul>
+        <p class="note">Evidence: the case brief describes her behaviour. The deck does not quote customer interviews, because none were provided for this case.</p>
+      </div>
+    </div>
+
+    <p class="eyebrow" style="margin-top:26px">Future-state journey map &middot; design hypothesis</p>
+    <div class="grid g4">
+      <div class="card stage">
+        <span class="num">Stage 1</span><h3>Discover &amp; add</h3>
+        <dl><dt>Action</dt><dd>Sees an offer to add the card while paying with Riverty at a partner. Applies in the app.</dd>
+        <dt>Internal state</dt><dd>Curious but skeptical</dd>
+        <dt>Pain addressed</dt><dd>No brand pull between checkouts</dd></dl>
+      </div>
+      <div class="card stage">
+        <span class="num">Stage 2</span><h3>Activate &amp; set control</h3>
+        <dl><dt>Action</dt><dd>Activates, adds to phone wallet, sees limit and terms upfront.</dd>
+        <dt>Internal state</dt><dd>Cautious, wants reassurance</dd>
+        <dt>Pain addressed</dt><dd>Fear of losing control</dd></dl>
+      </div>
+      <div class="card stage misery">
+        <span class="misery-flag">Moment of misery</span>
+        <span class="num">Stage 3</span><h3>Use online &amp; in-store</h3>
+        <dl><dt>Action</dt><dd>Pays at a non-partner site or taps her phone in a store, then decides whether to keep the item.</dd>
+        <dt>Internal state</dt><dd>Relieved and in control</dd>
+        <dt>Pain addressed</dt><dd>Coverage gap: today only a checkout that offers BNPL gives her &ldquo;decide first&rdquo;</dd></dl>
+      </div>
+      <div class="card stage">
+        <span class="num">Stage 4</span><h3>Review &amp; repay</h3>
+        <dl><dt>Action</dt><dd>Opens the app, sees purchases and repayment. This is where &ldquo;What I Owe&rdquo; lives.</dd>
+        <dt>Internal state</dt><dd>In command</dd>
+        <dt>Pain addressed</dt><dd>No everyday relationship with Riverty</dd></dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. BLUEPRINT -->
+<section id="s-blueprint" aria-label="Blueprint">
+  <div class="wrap">
+    <p class="eyebrow">Slide 7 &middot; Blueprint</p>
+    <h2>Now, Next, Later: a small test first, scale on evidence</h2>
+    <div class="grid g3">
+      <div class="card hero">
+        <span class="tag t-orange">Now &middot; Friends &amp; Family MVP</span>
+        <p>Virtual card on the Mastercard and Paymentology platform, fixed limit with automatic repayment, visible limit and repayment date, in-app application for existing users, basic servicing, and event tracking.</p>
+        <p class="small"><strong>Features:</strong> R2 Virtual card + wallet, R3 What I Owe, R7 Pre-approved invite</p>
+        <p class="note"><strong>Exit gate:</strong> activation and repeat use meet agreed thresholds, no decline in partner checkout volume, arrears and fraud within risk appetite, regulatory path confirmed.</p>
+      </div>
+      <div class="card key">
+        <span class="tag t-cyan">Next &middot; Public launch in Germany</span>
+        <p>Offer to eligible existing Riverty users, physical card if justified, targeted in-checkout and in-app promotion, merchant-facing benefits, and re-test of the 5% conversion assumption.</p>
+        <p class="small"><strong>Features:</strong> R4 Fixed limit + auto-repayment, R5 Card controls, R8 Repayment reminders</p>
+        <p class="note"><strong>Exit gate:</strong> real conversion and spend support the business case, unit economics positive after credit losses.</p>
+      </div>
+      <div class="card key">
+        <span class="tag t-violet">Later &middot; Europe &amp; advanced credit</span>
+        <p>Revolving credit and interest, additional markets (DACH, Benelux, Nordics), and a later review of wallet slots. Each needs its own regulatory approval.</p>
+        <p class="small"><strong>Features:</strong> R1 Decide-First Window, R6 Partner discovery</p>
+        <p class="note"><strong>Cut from MVP:</strong> R9 Physical card, R10 Rewards / cashback.</p>
+      </div>
+    </div>
+    <p class="small" style="margin-top:8px">Lane placement of R4 depends on Risk and Regulatory approval timing. Effort scores are product judgment, not engineering estimates.</p>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <span class="tag t-teal">PRD highlights &middot; R3 &ldquo;What I Owe&rdquo;</span>
+        <p class="small" style="margin-bottom:6px"><strong>Must have (first sprint)</strong></p>
+        <ul class="small">
+          <li>One total amount currently owed on the Riverty card</li>
+          <li>Itemised list of purchases behind the total</li>
+          <li>Next repayment date and amount (depends on R4)</li>
+          <li>Link to the card screen (behind a flag until R2 exists)</li>
+          <li>Home-screen entry point, German copy and EUR formatting</li>
+          <li>Loading, empty and error states, correct and secure data</li>
+        </ul>
+        <p class="note"><strong>Won&rsquo;t have now:</strong> keep or return actions, card controls, notifications, partner discovery, other providers&rsquo; balances, budgeting, interest and fees, making payments.</p>
+      </div>
+      <div class="card hero" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start">
+        <p class="eyebrow">Prototype</p>
+        <p>Link the prototype of the &ldquo;What I Owe&rdquo; screen here.</p>
+        <a class="btn" href="#" id="protoBtn" aria-disabled="true">View prototype</a>
+        <p class="small" style="margin-top:12px">Replace the <span class="mono">href</span> on this button with your prototype URL before submitting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. VALIDATION -->
+<section id="s-validation" aria-label="Validation">
+  <div class="wrap">
+    <p class="eyebrow">Slide 8 &middot; Validation</p>
+    <h2>Experiment plan: does one screen close the information gap?</h2>
+    <div class="card hero">
+      <span class="tag t-orange">Hypothesis</span>
+      <p style="margin:0">Giving cardholders who have made a settled purchase a single &ldquo;What I Owe&rdquo; screen will let them state what they owe and when it is due, and feel in control, measured by a +15 percentage point change (30% to 45%, baseline is a placeholder) in the share who correctly state both their amount owed (within EUR 5) and next repayment date at day 14.</p>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card key">
+        <span class="tag t-cyan">Control (A)</span>
+        <p class="small">Cardholders with at least one settled purchase see a basic list of card transactions only. No single screen showing total owed, the purchases behind it or the next repayment date and amount, and no entry point to one.</p>
+        <span class="tag t-pink">Variant (B)</span>
+        <p class="small">One new screen, &ldquo;What I Owe&rdquo;, reachable from the home screen: total owed at the top, itemised purchases (merchant, date, amount), next repayment date and amount. &ldquo;Owed&rdquo; means settled purchases only (to be confirmed by Risk and Finance). The card-screen link is not part of this test.</p>
+        <details>
+          <summary>Held constant (isolation check)</summary>
+          <p>App version and release date; card issuing and wallet provisioning (R2); credit limit and repayment mechanics (R4); card controls (R5); partner discovery (R6); invite and onboarding (R7); notifications and reminders (R8); no rewards; Riverty checkout at partners; fraud and risk rules; support routes and scripts; home-screen layout other than the single entry point; the day-14 survey identical in wording and timing in both arms; same population and enrolment period with random assignment. No other feature, copy change or marketing message goes live for either arm.</p>
+        </details>
+      </div>
+      <div class="card key">
+        <dl class="kv">
+          <dt>Primary metric</dt><dd>Share of surveyed cardholders (at least 1 settled purchase) who at day 14 correctly state both amount owed and next repayment date</dd>
+          <dt>Baseline</dt><dd>30% <em>(placeholder: replace with the control-arm rate)</em></dd>
+          <dt>MDE</dt><dd>+15 percentage points (30% to 45%)</dd>
+          <dt>Sample</dt><dd>163 responders per arm, about 326 enrolled per arm at a 50% response rate. 50/50 split, p &lt; 0.05 two-sided</dd>
+          <dt>Secondary</dt><dd>Self-reported control score (4 or 5 out of 5), higher in variant</dd>
+          <dt>Guardrail</dt><dd>Monthly spend per active user no more than 10% below control (directional at this size)</dd>
+          <dt>Stop rules</dt><dd>Any wrong-balance incident, or 2 or more variant users missing a repayment because of a displayed figure</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="grid g4" style="margin-top:16px">
+      <div class="card"><span class="tag t-teal">Ship</span><p class="small" style="margin:0">Knowledge +15 pts (p &lt; 0.05), control score higher, spend within 10%, no wrong balance, no repayment harm, arms within 50/50 &plusmn;5 pts and response rates within 10 pts</p></div>
+      <div class="card"><span class="tag t-orange">Iterate</span><p class="small" style="margin:0">Knowledge improves but control score or spend is inconclusive</p></div>
+      <div class="card"><span class="tag t-pink">Stop</span><p class="small" style="margin:0">Any wrong-balance incident, 2 or more repayment-harm cases, or a Risk objection</p></div>
+      <div class="card"><span class="tag t-blue">Inconclusive</span><p class="small" style="margin:0">Confidence interval spans zero and +15 pts: extend or move to a staged rollout</p></div>
+    </div>
+    <p class="small" style="margin-top:10px">Read date is fixed at the end of the enrolment and survey window (about 16 weeks at 50 enrolments a week, an assumption to confirm with Analytics). No results are reviewed for success before then. All thresholds are proposals to agree with Finance, Risk and Analytics.</p>
+  </div>
+</section>
+
+<!-- 6. LAUNCH -->
+<section id="s-launch" aria-label="Launch">
+  <div class="wrap">
+    <p class="eyebrow">Slide 9 &middot; Launch</p>
+    <h2>GTM: a minimal launch, because the test must stay clean</h2>
+    <div class="grid g3">
+      <div class="card hero">
+        <span class="tag t-orange">Goal</span>
+        <p class="small"><strong>Engagement.</strong> Cardholders already hold the card, and R3 helps them understand what they owe and when, protecting the churn guardrail and supporting repeat use. R3 doesn&rsquo;t drive activation by itself, so Conversion would misread it.</p>
+      </div>
+      <div class="card key">
+        <span class="tag t-cyan">Audience</span>
+        <p class="small">Pilot cardholders with at least one settled purchase. Lena-type users (32, Cologne, salaried, mobile-first, BNPL for non-trivial purchases) are the design target, but pilot membership doesn&rsquo;t guarantee a match. Only the variant half sees the feature during the test. Employees are analysed separately.</p>
+      </div>
+      <div class="card key">
+        <span class="tag t-violet">Launch tier: S, minimal</span>
+        <p class="small">About 1,000 active cardholders reached through Riverty&rsquo;s own app. Revenue impact is indirect. Marketing during the test would contaminate the A/B experiment. Moving to M requires every criterion in the decision table to hold.</p>
+      </div>
+    </div>
+
+    <p class="eyebrow" style="margin-top:20px">Channels</p>
+    <div>
+      <span class="pill"><strong>Owned</strong> &middot; In-app home-screen entry point, variant users only</span>
+      <span class="pill"><strong>Owned</strong> &middot; Post-test in-app message, then email (consent to be confirmed with Compliance)</span>
+      <span class="pill"><strong>Owned</strong> &middot; None for the pilot</span>
+    </div>
+
+    <p class="eyebrow" style="margin-top:14px">Success-metrics dashboard</p>
+    <div class="grid g3">
+      <div class="card metric key"><div class="lab">Knowledge at day 14</div><div class="big" style="color:var(--teal)">+15 pts</div><p class="small" style="margin:6px 0 0">Correct amount and date vs control, p &lt; 0.05</p></div>
+      <div class="card metric key"><div class="lab">Control score</div><div class="big" style="color:var(--cyan)">4&ndash;5 / 5</div><p class="small" style="margin:6px 0 0">&ldquo;I always know what I owe and when it is due&rdquo;, higher in variant</p></div>
+      <div class="card metric key"><div class="lab">Diagnostic: opens</div><div class="big" style="color:var(--blue)">X%</div><p class="small" style="margin:6px 0 0">Open the screen in the 7 days before repayment. X set before launch</p></div>
+    </div>
+    <div class="grid g3" style="margin-top:12px">
+      <div class="card metric"><div class="lab">Guardrail: spend</div><div class="big" style="color:var(--orange)">&ge; &minus;10%</div><p class="small" style="margin:6px 0 0">Monthly spend per active user vs control</p></div>
+      <div class="card metric"><div class="lab">Guardrail: wrong balance</div><div class="big" style="color:var(--pink)">0</div><p class="small" style="margin:6px 0 0">Any incident: flag off the same day</p></div>
+      <div class="card metric"><div class="lab">Guardrail: repayment harm</div><div class="big" style="color:var(--pink)">&lt; 2</div><p class="small" style="margin:6px 0 0">Variant users missing a repayment because of a displayed figure</p></div>
+    </div>
+
+    <div class="callout pink" style="margin-top:16px">
+      <p class="eyebrow" style="margin-bottom:6px">Bad signal to watch for</p>
+      <p class="small" style="margin:0"><strong>Any wrong balance:</strong> switch the flag off the same day, then Risk review. <strong>2 or more repayment-harm cases:</strong> stop and review. <strong>Spend more than 10% below control</strong> on a 4-week rolling basis: escalate. <strong>Survey response below 50% in either arm at week 6:</strong> apply the fallback. <strong>3 or more balance-related support contacts</strong> from variant cardholders in 4 weeks, or no knowledge difference despite high opens: review copy and layout for the next cycle.</p>
+    </div>
+    <p class="small" style="margin-top:10px"><strong>Likely post-launch decision:</strong> Iterate. Trigger: the knowledge score rises but spend or the control score is inconclusive. Ship only if every criterion in the decision table holds.</p>
+
+    <details>
+      <summary>Ownership, budget and timeline</summary>
+      <p><strong>Owners:</strong> PM (plan, experiment design, metrics, declaring the gate). Frontend lead (screen, entry point, feature flag, survey prompt). Backend lead (balance endpoint, daily reconciliation, kill switch). QA lead (test plan, release sign-off). Analytics (arm assignment, survey scoring, dashboard, Phase 3 monitoring). UX copy writer (German wording). Legal (copy review). Risk and Compliance (&ldquo;owed&rdquo; definition, control-arm approval, stop rules, email consent). R4 product owner (repayment calendar by the gate date). Customer Support (awareness note before the test, FAQ and briefing after). Partner success (merchant note). <strong>Budget:</strong> no paid media; survey tooling, German copy and legal review, and QA capacity quoted by their owners before Phase 1 ends.</p>
+      <p><strong>Phase 1, before the gate:</strong> R4 repayment calendar delivered, Risk approves the control arm and the &ldquo;owed&rdquo; definition, build behind the feature flag with a kill switch and daily balance reconciliation, internal release to the build and QA team only.</p>
+      <p><strong>Phase 2, weeks 1&ndash;16 after the gate:</strong> randomise at first settled purchase, day-14 survey in both arms, weekly guardrail review, no other changes to the card journey. Week 4 operational check, week 6 response-rate check, week 8 first descriptive look (safety only). Fallback: if enrolment is below about 200 at week 4 or response is below 50% in either arm at week 6, extend or move to a staged rollout.</p>
+      <p><strong>Phase 3, weeks 18&ndash;21 plus 4 weeks of monitoring:</strong> apply the signed decision table. Ship: roll out to all pilot cardholders, send the announcement, brief Support. Iterate: fix and re-run. Stop: switch off the flag. Weeks count from the gate date, when R2, R3 and R4 work together.</p>
+    </details>
+  </div>
+</section>
+
+<!-- 7. STORY -->
+<section id="s-story" aria-label="Story">
+  <div class="wrap">
+    <p class="eyebrow">Slide 10 &middot; Story</p>
+    <h2>What the work taught me</h2>
+    <div class="grid g2">
+      <div class="card key">
+        <span class="tag t-pink">Friction points</span>
+        <ul class="small">
+          <li><strong>Evidence vs. assumption.</strong> The business case figures looked like facts until I labelled them as modelling assumptions.</li>
+          <li><strong>Metric that measured a lookup.</strong> My first success metric (a knowledge check) could be answered by reading the new screen, so it would win without proving control.</li>
+          <li><strong>Pilot too small.</strong> About 1,000 active cardholders can&rsquo;t power an A/B test on a feature with a modest expected effect.</li>
+          <li><strong>Dependencies.</strong> The repayment date needs R4, which sits later in the roadmap, so R3 can&rsquo;t be tested alone.</li>
+        </ul>
+      </div>
+      <div class="card hero">
+        <span class="tag t-orange">Aha moment</span>
+        <p><strong>Lena isn&rsquo;t choosing a provider at all.</strong> She takes whichever one a merchant&rsquo;s checkout shows her, so Riverty&rsquo;s problem is not a better offer but having nothing she owns that carries &ldquo;decide first, pay later&rdquo; with her.</p>
+        <p class="small" style="margin:0">It also reframed &ldquo;What I Owe&rdquo;: it solves only the Riverty slice of her fragmentation, so it must never promise a full-wallet view.</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <span class="tag t-teal">Key takeaways and what I would do next</span>
+      <div class="grid g2">
+        <ul class="small">
+          <li>Write thresholds down before launch, so results can&rsquo;t be argued afterwards.</li>
+          <li>Pick guardrails that protect the strategy (partner checkout, spend), not just the product.</li>
+          <li>Make the scope smaller to get through approval faster.</li>
+        </ul>
+        <ul class="small">
+          <li>Interview Lena-type heavy users about in-store behaviour to replace the hypotheses.</li>
+          <li>Get the real baseline, weekly enrolment and survey response rates from Analytics, then resize.</li>
+          <li>Confirm the regulatory path and Risk approval for the control arm. If the pilot is too small, run a staged rollout with the same survey and guardrails.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. THANK YOU -->
+<section id="s-submit" aria-label="Thank you and submit">
+  <div class="wrap" style="text-align:center">
+    <p class="eyebrow">Thank you</p>
+    <h1>Questions?</h1>
+    <p class="lead" style="margin:18px auto 0">Riverty Card (Germany): &ldquo;What I Owe&rdquo; Overview</p>
+    <div class="grid g2" style="max-width:760px;margin:34px auto 0;text-align:left">
+      <div class="card">
+        <p class="eyebrow">Repo</p>
+        <p style="margin:0"><a href="https://github.com/Sebastian-vbg/Product-School" target="_blank" rel="noopener">github.com/Sebastian-vbg/Product-School</a></p>
+      </div>
+      <div class="card">
+        <p class="eyebrow">Cohort</p>
+        <p style="margin:0">Add your cohort tag</p>
+      </div>
+    </div>
+    <p style="margin-top:30px"><span class="pill" style="font-size:0.95rem;padding:10px 22px;background:rgba(251,146,60,0.2)">Submit the repo link to the learning platform</span></p>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function () {
+  var sections = Array.prototype.slice.call(document.querySelectorAll("section"));
+  var dotsEl = document.getElementById("dots");
+  var bar = document.getElementById("progress");
+  var current = 0;
+
+  sections.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", "Go to slide " + (i + 1) + ": " + s.getAttribute("aria-label"));
+    b.addEventListener("click", function () { go(i); });
+    dotsEl.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsEl.children);
+
+  function go(i) {
+    i = Math.max(0, Math.min(sections.length - 1, i));
+    sections[i].scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  }
+
+  function update() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
+    var mid = window.scrollY + window.innerHeight / 2;
+    for (var i = 0; i < sections.length; i++) {
+      var top = sections[i].offsetTop;
+      if (mid >= top && mid < top + sections[i].offsetHeight) { current = i; break; }
+    }
+    dots.forEach(function (d, i) { d.setAttribute("aria-current", i === current ? "true" : "false"); });
+  }
+
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+
+  document.addEventListener("keydown", function (e) {
+    var tag = (e.target && e.target.tagName) || "";
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SUMMARY") return;
+    if (e.key === "ArrowDown" || e.key === " " ) { e.preventDefault(); go(current + 1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); go(current - 1); }
+    else if (e.key === "Home") { e.preventDefault(); go(0); }
+    else if (e.key === "End") { e.preventDefault(); go(sections.length - 1); }
+    else if (e.key === "Escape") { go(0); }
+  });
+
+  var proto = document.getElementById("protoBtn");
+  if (proto) {
+    proto.addEventListener("click", function (e) {
+      if (proto.getAttribute("href") === "#") { e.preventDefault(); }
+    });
+  }
+})();
+</script>
+</body>
+</html>
