@@ -1,25 +1,32 @@
-# Experimentation Plan
+# A/B Experiment Brief, Riverty business-unit case
 
-> **Module 5 · ★ Deliverable 5.** Repo file `05-experimentation/experimentation-plan.md` — part of your submission.
-> Do the lab in the **Module 5 · Exercise Guide** (linked from the Module 5 deck), then click **⬇ Download .md** — it saves as this exact file. Commit it here.
-> It becomes the **Experimentation Plan** slide of your Module 6 final deck.
-
-## Overview
-
-_A high-level validation strategy to test your hypothesis before full-scale development._
-
-_____
-
-## What you're testing
-
-| Element | Detail |
+## Parameters
+| Parameter | Decision |
 |---|---|
-| Hypothesis under test | _____ |
-| Experiment design (A/B, etc.) | _____ |
-| Primary metric | _____ |
-| Guardrail metric | _____ |
-| Decision rule (ship / kill / pivot) | _____ |
+| Feature under test | What I Owe” Overview: one screen with total owed, itemised card purchases, and next repayment date and amount |
+| Persona | Lena, 32, Cologne. Salaried, mobile-first shopper on a middling income with no financial cushion, who uses BNPL for non-trivial purchases and wants control over when money leaves her account |
+| Expected outcome | Cardholders with at least one purchase can state what they owe and when it is due, and report feeling in control of their card spending |
+| Primary success metric | Share of surveyed cardholders (with at least 1 settled purchase) who at day 14 correctly state both their amount owed (within EUR 5 of the system figure) and their next repayment date. Survey fires on app open, with an instruction not to check the app. |
+| Baseline rate | 30% (placeholder: replace with the control-arm rate from a pre-test survey or Analytics) |
+| Guardrail metric | Monthly card spend per active user |
+| Guardrail boundary | Variant no more than 10% below control (proposed; directional at this sample size) |
+| Second guardrail | Repayment harm and confusion: any wrong-balance incident, or 2 or more variant users missing a repayment because of a displayed figure, triggers immediate stop and review. Support contacts about balances per 1,000 cardholders not higher than control. |
+| Minimum Detectable Effect | +15 percentage points (30% to 45%) |
+| Sample size per arm | 163 survey responders per arm. At an assumed 50% response rate that is about 326 activated cardholders per arm (652 total). At a 30% response rate it is about 543 per arm. |
+| Traffic split | 50/50 |
+| Test duration | Enrol until about 326 activated cardholders per arm have made a first purchase. Survey at day 14, closes day 21. Guardrails tracked for 30 days after activation. Full weekly cycles. Illustration: at 50 activations a week, 652 users take about 13 weeks plus 3 for the survey, roughly 16 weeks. Confirm with Analytics. |
+| Significance threshold | p < 0.05 (95%), two-sided |
 
-## Findings & decision _(after running it)_
+## Control vs. Variant
+- **Control (A):** Cardholders with at least one settled purchase use the Riverty card via the app wallet and online. There is no single screen showing a total owed, the purchases behind it, or the next repayment date and amount, and no entry point to one. They can see a basic list of card transactions only. This matches Lena’s moment of misery: she can’t see in one place what she owes and when money leaves her account.
+- **Variant (B):** Add one new screen, “What I Owe”, reachable from the app home screen. It shows one total amount currently owed at the top, an itemised list of the card purchases behind it (merchant, date, amount), and the next repayment date and amount. “Owed” means settled purchases only (definition to be confirmed by Risk and Finance before launch). It has German copy, EUR formatting, loading, empty and error states, and shows only the cardholder’s own data behind existing app authentication. The link to the card screen is not part of this test.
+- **Held constant (isolation check):** Identical in both arms: app version and release date; card issuing, card details and wallet provisioning (R2); credit limit and repayment mechanics (R4); card controls (R5); partner merchant discovery (R6); invite and onboarding flow (R7); notifications and repayment reminders (R8); rewards or cashback (none); Riverty checkout at partner merchants; fraud and risk rules; support routes and scripts; home screen layout other than the single entry point to the new screen; no link between the overview and the card screen in either arm. The day-14 survey is identical in wording and timing in both arms, fires on app open, and is sent only to cardholders with at least one settled purchase. Whether the user opened the “What I Owe” screen in the previous 24 hours is recorded for analysis. Same cardholder population and enrolment period with random assignment. No other feature, copy change or marketing message goes live for either arm during the test.
 
-_____
+## Hypothesis
+> I believe that What I Owe” Overview: one screen with total owed, itemised card purchases, and next repayment date and amount for Lena, 32, Cologne. Salaried, mobile-first shopper on a middling income with no financial cushion, who uses BNPL for non-trivial purchases and wants control over when money leaves her account will result in Cardholders with at least one purchase can state what they owe and when it is due, and report feeling in control of their card spending, as measured by a +15 percentage points (30% to 45%) change in Share of surveyed cardholders (with at least 1 settled purchase) who at day 14 correctly state both their amount owed (within EUR 5 of the system figure) and their next repayment date. Survey fires on app open, with an instruction not to check the app. within Enrol until about 326 activated cardholders per arm have made a first purchase. Survey at day 14, closes day 21. Guardrails tracked for 30 days after activation. Full weekly cycles. Illustration: at 50 activations a week, 652 users take about 13 weeks plus 3 for the survey, roughly 16 weeks. Confirm with Analytics.. We will protect Monthly card spend per active user throughout the test.
+
+## Shipping criteria
+> We will **ship** if Share of surveyed cardholders (with at least 1 settled purchase) who at day 14 correctly state both their amount owed (within EUR 5 of the system figure) and their next repayment date. Survey fires on app open, with an instruction not to check the app. improves by ≥ +15 percentage points (30% to 45%) at p < 0.05 (95%), two-sided and Monthly card spend per active user does not reach Variant no more than 10% below control (proposed; directional at this sample size) after Enrol until about 326 activated cardholders per arm have made a first purchase. Survey at day 14, closes day 21. Guardrails tracked for 30 days after activation. Full weekly cycles. Illustration: at 50 activations a week, 652 users take about 13 weeks plus 3 for the survey, roughly 16 weeks. Confirm with Analytics..
+> We will **iterate** if direction is positive but lift is below the MDE.
+> We will **kill** if the primary metric shows no improvement or moves negatively.
+> The read date is fixed at the end of Enrol until about 326 activated cardholders per arm have made a first purchase. Survey at day 14, closes day 21. Guardrails tracked for 30 days after activation. Full weekly cycles. Illustration: at 50 activations a week, 652 users take about 13 weeks plus 3 for the survey, roughly 16 weeks. Confirm with Analytics., no results reviewed before this date.
